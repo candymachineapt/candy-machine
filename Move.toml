@@ -1,0 +1,11 @@
+[package]
+name = "CandyMachine"
+version = "0.0.1"
+
+[addresses]
+candymachine = "_"
+
+[dependencies]
+AptosStdlib = { git="https://github.com/aptos-labs/aptos-core", rev="5ff03ee2dcf81cd955a73fd1f95fec615efdb2f9", subdir="aptos-move/framework/aptos-stdlib/" }
+AptosToken = { git="https://github.com/aptos-labs/aptos-core", rev="5ff03ee2dcf81cd955a73fd1f95fec615efdb2f9", subdir="aptos-move/framework/aptos-token/" }
+AptosFramework = { git="https://github.com/aptos-labs/aptos-core", rev="5ff03ee2dcf81cd955a73fd1f95fec615efdb2f9", subdir="aptos-move/framework/aptos-framework/" }

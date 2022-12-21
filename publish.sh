@@ -1,0 +1,1 @@
+aptos move publish --named-addresses candymachine=default

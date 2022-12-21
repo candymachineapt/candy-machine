@@ -1,0 +1,1 @@
+aptos move run-script --script-path scripts/create_candy_machine.move

@@ -1,0 +1,1 @@
+aptos move compile --named-addresses candymachine=default
