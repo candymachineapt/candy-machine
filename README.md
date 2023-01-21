@@ -3,7 +3,7 @@ A fast, secure and efficient NFT orchestration app.
 
 Testnet Account: 0x69c60de3c31db89d9fe61393a57180e40ad2d405e501cfeb5190112e3c352c63
 
-Mainnet Account: Coming soon as candymachine.apt
+Mainnet Account: 0x88e579563fad6dd96b17c9314badd081f667f443519a2512c0fbf95d462cc791 as candymachine.apt
 
 ## Build
 
