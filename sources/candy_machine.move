@@ -28,6 +28,8 @@ module candymachine::candy_machine {
     friend candymachine::update_sell_price_tests;
     #[test_only]
     friend candymachine::random_tests;
+    #[test_only]
+    friend candymachine::pull_lever_claim_tests;
 
     const CANDY_MACHINE_STATE_INITIAL: u8 = 0;
     const CANDY_MACHINE_STATE_ACTIVE: u8 = 1;
@@ -51,12 +53,17 @@ module candymachine::candy_machine {
         candy_machine_create_events: event::EventHandle<CandyMachineCreateEvent>,
     }
 
+    struct PullLeverClaim {
+        candy_machine_address: address
+    }
+
     const CANDY_MACHINE_NOT_EXISTS: u64 = 10;
     const ONLY_CREATOR_PERMITTED: u64 = 11;
     const FAILED_WHEN_RANDOMIZING: u64 = 12;
     const CANDY_MACHINE_INVALID_STATE: u64 = 13;
     const THERE_IS_NO_CANDIES: u64 = 14;
     const SOLD_OUT: u64 = 15;
+    const WRONG_PULL_LEVER_CLAIM: u64 = 16;
 
     public(friend) fun create_candy_machine<CoinType, CandyType: store>(
         account: &signer,
@@ -222,11 +229,14 @@ module candymachine::candy_machine {
     public(friend) fun insert_coin<CoinType, CandyType: store>(
         account: &signer,
         candy_machine_address: address
-    ) acquires CandyMachine {
+    ): PullLeverClaim acquires CandyMachine {
         let candy_machine: & CandyMachine<CoinType, CandyType> = borrow_global<CandyMachine<CoinType, CandyType>>(
             candy_machine_address
         );
         coin::transfer<CoinType>(account, candy_machine_address, candy_machine.sell_price);
+
+        let result: PullLeverClaim = PullLeverClaim { candy_machine_address };
+        result
     }
 
     public(friend) fun withdraw<CoinType, CandyType: store>(
@@ -245,12 +255,16 @@ module candymachine::candy_machine {
     }
 
     public(friend) fun pull_lever<CoinType, CandyType: copy + store>(
-        candy_machine_address: address
+        candy_machine_address: address,
+        pull_lever_claim: PullLeverClaim
     ): CandyType acquires CandyMachine {
         let candy_machine: &mut CandyMachine<CoinType, CandyType> = borrow_global_mut<CandyMachine<CoinType, CandyType>>(
             candy_machine_address
         );
         assert!(candy_machine.state == CANDY_MACHINE_STATE_ACTIVE, error::invalid_state(CANDY_MACHINE_INVALID_STATE));
+        assert!(pull_lever_claim.candy_machine_address == candy_machine_address, error::invalid_argument(WRONG_PULL_LEVER_CLAIM));
+
+        let PullLeverClaim { candy_machine_address: _claimed_candy_machine_address } = pull_lever_claim;
 
         let amount_of_candy: u64 = vector::length(&candy_machine.candies);
         let left_amount_of_candy: u64 = candy_machine.left_amount_of_candy;

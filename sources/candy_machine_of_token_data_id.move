@@ -13,6 +13,7 @@ module candymachine::candy_machine_of_token_data_id {
     use aptos_framework::event;
     use aptos_framework::account;
     use std::string;
+    use candymachine::candy_machine::PullLeverClaim;
 
     #[test_only]
     friend candymachine::create_candy_machine_tests;
@@ -300,8 +301,8 @@ module candymachine::candy_machine_of_token_data_id {
     public entry fun mint(account: &signer, candy_machine_address: address) acquires CandyMachineEvents {
         candy_machine::check_candy_machine_exists<AptosCoin, TokenDataId>(candy_machine_address);
 
-        candy_machine::insert_coin<AptosCoin, TokenDataId>(account, candy_machine_address);
-        let lucky_token_data_id: TokenDataId = candy_machine::pull_lever<AptosCoin, TokenDataId>(candy_machine_address);
+        let claim: PullLeverClaim = candy_machine::insert_coin<AptosCoin, TokenDataId>(account, candy_machine_address);
+        let lucky_token_data_id: TokenDataId = candy_machine::pull_lever<AptosCoin, TokenDataId>(candy_machine_address, claim);
         let resource_signer_from_cap: signer = candy_machine::borrow_resource_signer_from_cap<AptosCoin, TokenDataId>(
             candy_machine_address
         );

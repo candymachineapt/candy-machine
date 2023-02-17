@@ -58,4 +58,16 @@ module candymachine::create_candy_machine_tests {
         candy_machine::check_candy_machine_exists<AptosCoin, TokenDataId>(candy_machine_address);
         candy_machine_address
     }
+
+    public fun create_candy_machine_2_test(account: &signer): address {
+        let candy_machine_address: address = candy_machine::create_candy_machine<AptosCoin, TokenDataId>(
+            account,
+            x"02"
+        );
+        let exists: bool = account::exists_at(candy_machine_address);
+
+        assert!(exists, error::not_found(FAILED_CANDY_MACHINE_NOT_EXISTS));
+        candy_machine::check_candy_machine_exists<AptosCoin, TokenDataId>(candy_machine_address);
+        candy_machine_address
+    }
 }
